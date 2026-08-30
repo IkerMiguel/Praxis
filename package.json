@@ -4,8 +4,35 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "//dev:api": "Arranca la API Nest en modo desarrollo (watch)",
+    "dev:api": "pnpm --filter api start:dev",
+
+    "//dev:web": "Arranca el frontend Next.js en desarrollo",
     "dev:web": "pnpm --filter web dev",
-    "dev:api": "pnpm --filter api start:dev"
+
+    "//lint:api": "Revisa estilo y errores estáticos en apps/api (oxlint)",
+    "lint:api": "pnpm --filter api lint",
+
+    "//lint:web": "Revisa estilo y errores estáticos en apps/web (eslint)",
+    "lint:web": "pnpm --filter web lint",
+
+    "//test:api": "Ejecuta tests unitarios de la API",
+    "test:api": "pnpm --filter api test",
+
+    "//test:web": "Ejecuta tests del frontend (cuando existan)",
+    "test:web": "pnpm --filter web test",
+
+    "//build:api": "Compila la API a producción (dist/)",
+    "build:api": "pnpm --filter api build",
+
+    "//build:web": "Compila el frontend Next para producción",
+    "build:web": "pnpm --filter web build",
+
+    "//ci:api": "Pipeline local backend: lint + test + build",
+    "ci:api": "pnpm lint:api && pnpm test:api && pnpm build:api",
+    
+    "//ci:web": "Pipeline local frontend: lint + test + build",
+    "ci:web": "pnpm lint:web && pnpm test:web && pnpm build:web"
   },
   "keywords": [],
   "author": "",
