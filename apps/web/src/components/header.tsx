@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { Icon } from "@/components/icons";
 
-export function Header() {
+export function Header({
+  campus = "Docente / Solicitante | Sede Cali",
+}: {
+  campus?: string;
+}) {
   return (
     <header className="sticky top-0 z-40 border-b border-line/60 bg-white/90 backdrop-blur">
       <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -44,6 +48,24 @@ export function Header() {
             <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ba1a1a] px-1 text-[11px] font-semibold leading-[11px] text-white">
               3
             </span>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-panel py-1 pl-1 pr-3">
+            <Image
+              src="/avatar-mendoza.png"
+              alt="Ing. Carlos Mendoza"
+              width={32}
+              height={32}
+              className="size-8"
+            />
+            <div className="hidden lg:block">
+              <p className="text-[13px] font-semibold leading-[16px] text-[#191c1e]">
+                Ing. Carlos Mendoza
+              </p>
+              <p className="text-[11px] font-semibold leading-[12px] tracking-[0.44px] text-muted">
+                {campus}
+              </p>
+            </div>
           </div>
         </div>
       </div>
