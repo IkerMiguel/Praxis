@@ -6,7 +6,7 @@ export default function NuevoReportePage() {
     <div className="flex min-h-screen flex-col font-sans text-ink">
       <Header />
       <div className="flex flex-1">
-        <Sidebar />
+        <Sidebar active="nuevo-reporte" />
         <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
           <section className="rounded-lg bg-white p-6 shadow-sm">
             <h1 className="font-display text-[28px] font-bold leading-9 tracking-[-0.7px]">
