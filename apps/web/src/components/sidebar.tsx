@@ -53,7 +53,10 @@ export function Sidebar({
             </Link>
           )}
 
-          <a href="#" className={`${linkIdle} text-[14px] leading-5`}>
+          <a
+            href="#"
+            className={`${linkIdle} text-[14px] leading-5`}
+          >
             <Icon name="inbox" className="size-4 text-muted" />
             Mis Solicitudes
             <span
@@ -68,7 +71,10 @@ export function Sidebar({
           SOPORTE
         </p>
         <nav className="mt-3 space-y-1">
-          <a href="#" className={`${linkIdle} text-[14px] leading-5`}>
+          <a
+            href="#"
+            className={`${linkIdle} text-[14px] leading-5`}
+          >
             <Icon name="help" className="size-4 text-muted" />
             Ayuda / Preguntas
             <br />

@@ -198,10 +198,7 @@ export default function Home() {
                       <span className="text-[13px] font-bold leading-[18px] text-ink">
                         {t.id}
                       </span>
-                      <StatusBadge
-                        label={t.status.label}
-                        className={t.status.badge}
-                      />
+                      <StatusBadge label={t.status.label} className={t.status.badge} />
                       <span className="text-[11px] font-semibold leading-[14px] tracking-[0.44px] text-muted">
                         {t.time}
                       </span>
@@ -232,9 +229,7 @@ export default function Home() {
                     className={`flex h-8 items-center gap-2 rounded-md px-3.5 text-[13px] font-semibold leading-[18px] transition-colors ${t.action.className}`}
                   >
                     {t.action.label}
-                    {t.tinted ? (
-                      <Icon name="arrowRight" className="size-3" />
-                    ) : null}
+                    {t.tinted ? <Icon name="arrowRight" className="size-3" /> : null}
                   </button>
                 </article>
                 {t.id !== tickets[tickets.length - 1].id ? (
