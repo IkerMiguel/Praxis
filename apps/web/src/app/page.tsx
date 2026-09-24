@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Icon } from "@/components/icons";
+import { Icon, type IconName } from "@/components/icons";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 
@@ -18,6 +18,62 @@ function StatusBadge({
     </span>
   );
 }
+
+type Ticket = {
+  id: string;
+  status: { label: string; badge: string };
+  time: string;
+  title: string;
+  location: string;
+  locationColor?: string;
+  metaIcon: IconName;
+  meta: string;
+  metaColor?: string;
+  action: { label: string; className: string };
+  tinted?: boolean;
+};
+
+const tickets: Ticket[] = [
+  {
+    id: "#TKT-2026-0489",
+    status: { label: "En Proceso", badge: "bg-[#cce5ff] text-[#001d31]" },
+    time: "• Hace 45 min",
+    title: "Fuga de agua en lavamanos piso 3",
+    location: "Sede Cali • Bloque A • Baño Hombres",
+    metaIcon: "wrench",
+    meta: "Cuadrilla Hidráulica 02",
+    action: { label: "Ver Detalle", className: "bg-btn text-ink" },
+  },
+  {
+    id: "#TKT-2026-0472",
+    status: {
+      label: "Pendiente de Información",
+      badge: "bg-[#fef3c7] text-[#92400e]",
+    },
+    time: "• Ayer, 16:30",
+    title: "Lámpara LED parpadeante en Lab 302",
+    location: "Sede Cali • Bloque B • Lab Sistemas",
+    metaIcon: "help",
+    meta: "Requiere aclaración técnica de balastro",
+    metaColor: "text-[#92400e]",
+    action: {
+      label: "Completar Información Requerida",
+      className: "bg-[#f59e0b] text-white shadow-sm",
+    },
+    tinted: true,
+  },
+  {
+    id: "#TKT-2026-0450",
+    status: { label: "Resuelto", badge: "bg-[#d1fae5] text-[#065f46]" },
+    time: "• 02 Mar 2026",
+    title: "Cerradura averiada en Aula Magna 101",
+    location: "Sede Cali • Bloque B • Auditorio 101",
+    metaIcon: "check",
+    meta: "Conformidad firmada",
+    metaColor: "text-[#047857]",
+    action: { label: "Ver Detalle", className: "bg-btn text-ink" },
+  },
+];
 
 export default function Home() {
   return (
@@ -109,6 +165,77 @@ export default function Home() {
               </a>
             </section>
           </div>
+
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-[28px] font-bold leading-9 tracking-[-0.7px]">
+                Mis Reportes Recientes
+              </h2>
+              <p className="mt-1 text-[14px] leading-5 text-muted">
+                Seguimiento al estado de tus requerimientos radicados en el
+                sistema PRAXIS.
+              </p>
+            </div>
+          </div>
+
+          <section className="mt-4 overflow-hidden rounded-lg bg-white shadow-md">
+            {tickets.map((t) => (
+              <div key={t.id}>
+                <article
+                  className={`flex flex-wrap items-center justify-between gap-4 px-6 py-5 ${
+                    t.tinted ? "bg-[#fffbeb]" : ""
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[13px] font-bold leading-[18px] text-ink">
+                        {t.id}
+                      </span>
+                      <StatusBadge
+                        label={t.status.label}
+                        className={t.status.badge}
+                      />
+                      <span className="text-[11px] font-semibold leading-[14px] tracking-[0.44px] text-muted">
+                        {t.time}
+                      </span>
+                    </div>
+                    <h3 className="mt-2 font-display text-[16px] font-semibold leading-6 tracking-[-0.08px] text-[#191c1e]">
+                      {t.title}
+                    </h3>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] leading-4 tracking-[0.12px]">
+                      <span className="flex items-center gap-1.5 text-muted">
+                        <Icon name="mapPin" className="size-3 text-brand" />
+                        {t.location}
+                      </span>
+                      <span
+                        className={`flex items-center gap-1.5 ${
+                          t.metaColor ?? "text-muted"
+                        }`}
+                      >
+                        <Icon
+                          name={t.metaIcon}
+                          className={`size-3 ${t.metaColor ?? "text-muted"}`}
+                        />
+                        {t.meta}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className={`flex h-8 items-center gap-2 rounded-md px-3.5 text-[13px] font-semibold leading-[18px] transition-colors ${t.action.className}`}
+                  >
+                    {t.action.label}
+                    {t.tinted ? (
+                      <Icon name="arrowRight" className="size-3" />
+                    ) : null}
+                  </button>
+                </article>
+                {t.id !== tickets[tickets.length - 1].id ? (
+                  <div className="mx-6 h-px bg-line" />
+                ) : null}
+              </div>
+            ))}
+          </section>
         </main>
       </div>
     </div>
