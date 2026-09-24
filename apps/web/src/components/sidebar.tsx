@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/components/icons";
 
 const linkIdle =
@@ -11,20 +12,20 @@ export function Sidebar() {
           PRINCIPAL
         </p>
         <nav className="mt-3 space-y-1">
-          <a
-            href="#"
+          <Link
+            href="/"
             className={`${linkIdle} bg-ink text-[13px] font-semibold leading-[18px] text-white shadow-sm`}
           >
             <Icon name="home" className="size-4" />
             Inicio / Panel
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            href="/nuevo-reporte"
             className={`${linkIdle} text-[14px] leading-5 text-muted hover:bg-panel`}
           >
             <Icon name="plus" className="size-4 text-brand" />
             + Nuevo Reporte
-          </a>
+          </Link>
           <a
             href="#"
             className={`${linkIdle} text-[14px] leading-5 text-muted hover:bg-panel`}
