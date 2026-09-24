@@ -10,6 +10,11 @@ export function Sidebar({
 }: {
   active?: "inicio" | "nuevo-reporte";
 }) {
+  const badgeTone =
+    active === "nuevo-reporte"
+      ? "bg-btn text-muted"
+      : "bg-brand text-white";
+
   return (
     <aside className="hidden w-64 shrink-0 flex-col justify-between border-r border-line/60 bg-white px-3 pb-3 pt-4 lg:flex">
       <div>
@@ -51,6 +56,11 @@ export function Sidebar({
           <a href="#" className={`${linkIdle} text-[14px] leading-5`}>
             <Icon name="inbox" className="size-4 text-muted" />
             Mis Solicitudes
+            <span
+              className={`ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[12px] font-bold leading-4 ${badgeTone}`}
+            >
+              3
+            </span>
           </a>
         </nav>
 
