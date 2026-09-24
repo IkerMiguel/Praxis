@@ -176,6 +176,13 @@ export default function Home() {
                 sistema PRAXIS.
               </p>
             </div>
+            <button
+              type="button"
+              className="flex h-9 items-center gap-2 rounded-md bg-btn px-4 text-[13px] font-semibold leading-[18px] text-ink transition-colors hover:bg-line"
+            >
+              <Icon name="fileText" className="size-3" />
+              Historial Completo
+            </button>
           </div>
 
           <section className="mt-4 overflow-hidden rounded-lg bg-white shadow-md">
@@ -235,6 +242,30 @@ export default function Home() {
                 ) : null}
               </div>
             ))}
+          </section>
+
+          <section className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-lg bg-panel p-5 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ink">
+                <Icon name="bookOpen" className="size-4 text-white" />
+              </span>
+              <div>
+                <h4 className="font-display text-[16px] font-bold leading-6 tracking-[-0.08px]">
+                  ¿Primera vez registrando una falla física?
+                </h4>
+                <p className="mt-1 text-[12px] leading-4 text-muted">
+                  Consulta las guías de clasificación técnica para agilizar la
+                  gestión y atención técnica de infraestructura.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="flex h-9 items-center gap-2 rounded-md bg-white px-4 text-[13px] font-semibold leading-[18px] text-ink shadow-sm transition-colors hover:bg-panel"
+            >
+              <Icon name="bookOpen" className="size-3" />
+              Guía de Usuario PRAXIS
+            </button>
           </section>
         </main>
       </div>
