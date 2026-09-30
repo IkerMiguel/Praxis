@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { DemoModule } from './demo/module/demo.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -14,10 +16,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         username: config.get('DATABASE_USER'),
         password: config.get('DATABASE_PASSWORD'),
         database: config.get('DATABASE_NAME'),
-        autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV !== 'production', // solo dev
+        autoLoadEntities: true, 
+        synchronize: process.env.NODE_ENV !== 'production', 
       }),
     }),
+    
+    DemoModule,
   ],
 })
 export class AppModule {}
