@@ -35,7 +35,6 @@ export function Sidebar({
               Inicio / Panel
             </Link>
           )}
-
           {active === "nuevo-reporte" ? (
             <span
               className={`${linkBase} bg-[#1e293b] text-[13px] font-semibold leading-[18px] text-white shadow-sm`}
@@ -52,7 +51,6 @@ export function Sidebar({
               + Nuevo Reporte
             </Link>
           )}
-
           <a href="#" className={`${linkIdle} text-[14px] leading-5`}>
             <Icon name="inbox" className="size-4 text-muted" />
             Mis Solicitudes
