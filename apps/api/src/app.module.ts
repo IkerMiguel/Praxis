@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { DemoModule } from './demo/module/demo.module';
+import { CatalogosModule } from './catalogos/catalogos.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
+import { RequerimientosModule } from './requerimientos/requerimientos.module';
+import { HistorialModule } from './historial/historial.module';
 
 @Module({
   imports: [
@@ -17,11 +19,14 @@ import { DemoModule } from './demo/module/demo.module';
         password: config.get('DATABASE_PASSWORD'),
         database: config.get('DATABASE_NAME'),
         autoLoadEntities: true, 
-        synchronize: process.env.NODE_ENV !== 'production', 
+        synchronize: true, // TypeORM generará el esquema SQL automáticamente
+        namingStrategy: new (require('typeorm-naming-strategies').SnakeNamingStrategy)(), // Mantiene la estructura snake_case de tu SQL
       }),
     }),
-    
-    DemoModule,
+    CatalogosModule,
+    UsuariosModule,
+    RequerimientosModule,
+    HistorialModule,
   ],
 })
 export class AppModule {}
