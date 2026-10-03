@@ -41,10 +41,7 @@ export function Sidebar({
             + Nuevo Reporte
           </a>
 
-          <a
-            href="#"
-            className={`${linkIdle} text-[14px] leading-5`}
-          >
+          <a href="#" className={`${linkIdle} text-[14px] leading-5`}>
             <Icon name="inbox" className="size-4 text-muted" />
             Mis Solicitudes
             <span
@@ -59,10 +56,7 @@ export function Sidebar({
           SOPORTE
         </p>
         <nav className="mt-3 space-y-1">
-          <a
-            href="#"
-            className={`${linkIdle} text-[14px] leading-5`}
-          >
+          <a href="#" className={`${linkIdle} text-[14px] leading-5`}>
             <Icon name="help" className="size-4 text-muted" />
             Ayuda / Preguntas
             <br />
@@ -73,7 +67,8 @@ export function Sidebar({
 
       <div className="rounded-md bg-panel p-3">
         <p className="text-[11px] font-semibold uppercase leading-[14px] tracking-[0.44px] text-muted">
-          PRAXIS ECCI v1.0 — {active === "nuevo-reporte" ? "Campus Cali" : "MVP"}
+          PRAXIS ECCI v1.0 —{" "}
+          {active === "nuevo-reporte" ? "Campus Cali" : "MVP"}
         </p>
         <p className="mt-1 text-[12px] leading-4 text-muted">
           Mesa de Ayuda Operacional
