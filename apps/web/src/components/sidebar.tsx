@@ -11,7 +11,7 @@ const linkActive = `${linkBase} bg-ink text-[13px] font-semibold leading-[18px] 
 
 const items = [
   { href: "/panel", label: "Inicio / Panel", icon: "home" as const },
-  { href: "/reportes/nuevo", label: "+ Nuevo Reporte", icon: "plus" as const },
+  { href: "/reportes/nuevo", label: "Nuevo Reporte", icon: "plus" as const },
   {
     href: "/mis-solicitudes",
     label: "Mis Solicitudes",
