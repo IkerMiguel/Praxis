@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-// 1. Importa tu nuevo controlador aquí (ajusta la ruta si guardaste el archivo en otra carpeta)
 import { UsuarioController } from './usuario/usuario.controller';
+import { DashboardController } from './dashboard/dashboard.controller';
 
 //import { CatalogosModule } from './catalogos/catalogos.module';
 //import { UsuariosModule } from './usuarios/usuarios.module';
@@ -32,7 +31,6 @@ import { UsuarioController } from './usuario/usuario.controller';
     //RequerimientosModule,
     //HistorialModule,
   ],
-  // 2. Agrega el arreglo controllers y registra tu UsuarioController
-  controllers: [UsuarioController],
+  controllers: [UsuarioController, DashboardController],
 })
 export class AppModule {}
