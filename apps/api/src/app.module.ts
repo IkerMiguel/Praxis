@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CatalogosModule } from './catalogos/catalogos.module';
-import { UsuariosModule } from './usuarios/usuarios.module';
-import { RequerimientosModule } from './requerimientos/requerimientos.module';
-import { HistorialModule } from './historial/historial.module';
+
+// 1. Importa tu nuevo controlador aquí (ajusta la ruta si guardaste el archivo en otra carpeta)
+import { UsuarioController } from './usuario/usuario.controller';
+
+//import { CatalogosModule } from './catalogos/catalogos.module';
+//import { UsuariosModule } from './usuarios/usuarios.module';
+//import { RequerimientosModule } from './requerimientos/requerimientos.module';
+//import { HistorialModule } from './historial/historial.module';
 
 @Module({
   imports: [
@@ -19,14 +23,16 @@ import { HistorialModule } from './historial/historial.module';
         password: config.get('DATABASE_PASSWORD'),
         database: config.get('DATABASE_NAME'),
         autoLoadEntities: true, 
-        synchronize: true, // TypeORM generará el esquema SQL automáticamente
-        namingStrategy: new (require('typeorm-naming-strategies').SnakeNamingStrategy)(), // Mantiene la estructura snake_case de tu SQL
+        synchronize: true, 
+        namingStrategy: new (require('typeorm-naming-strategies').SnakeNamingStrategy)(), 
       }),
     }),
-    CatalogosModule,
-    UsuariosModule,
-    RequerimientosModule,
-    HistorialModule,
+    //CatalogosModule,
+    //UsuariosModule,
+    //RequerimientosModule,
+    //HistorialModule,
   ],
+  // 2. Agrega el arreglo controllers y registra tu UsuarioController
+  controllers: [UsuarioController],
 })
 export class AppModule {}
