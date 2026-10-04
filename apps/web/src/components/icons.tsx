@@ -96,6 +96,9 @@ const paths: Record<string, JSX.Element> = {
       <path d="M14 11v6" />
     </>
   ),
+  zap: (
+    <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+  ),
   image: (
     <>
       <rect x="3" y="3" width="18" height="18" rx="2" />
