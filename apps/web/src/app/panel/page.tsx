@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons";
+import { RecentReportsList } from "@/components/recent-reports-list";
 
 const demoUser = {
   name: "Ing. Carlos Mendoza",
@@ -73,8 +74,8 @@ export default function PanelPage() {
                 <span className="size-1.5 rounded-full bg-brand" />
                 {enProceso} En Proceso
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
-                <span className="size-1.5 rounded-full bg-amber-400" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-pending px-2.5 py-1 text-xs font-medium text-pending-ink">
+                <span className="size-1.5 rounded-full bg-pending-dot" />
                 {pendiente} Pendiente
               </span>
             </div>
@@ -99,6 +100,7 @@ export default function PanelPage() {
           </Link>
         </section>
       </div>
+      <RecentReportsList />
     </div>
   );
 }

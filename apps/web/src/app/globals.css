@@ -11,6 +11,11 @@
   --color-panel: #f2f4f6;
   --color-line: #e0e3e5;
   --color-btn: #e6e8ea;
+  --color-pending: #ffe8d1;
+  --color-pending-row: #fff6ed;
+  --color-pending-ink: #c45c26;
+  --color-pending-dot: #f7a364;
+  --color-pending-action: #f59e0b;
 }
 
 body {
