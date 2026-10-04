@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuarioController } from './usuario/usuario.controller';
 import { DashboardController } from './dashboard/dashboard.controller';
+import { ReportesController } from './reportes/reportes.controller';
 
 //import { CatalogosModule } from './catalogos/catalogos.module';
 //import { UsuariosModule } from './usuarios/usuarios.module';
@@ -31,6 +32,6 @@ import { DashboardController } from './dashboard/dashboard.controller';
     //RequerimientosModule,
     //HistorialModule,
   ],
-  controllers: [UsuarioController, DashboardController],
+  controllers: [UsuarioController, DashboardController, ReportesController],
 })
 export class AppModule {}
