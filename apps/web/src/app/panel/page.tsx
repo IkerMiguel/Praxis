@@ -105,6 +105,30 @@ export default async function PanelPage() {
         </section>
       </div>
       <RecentReportsList items={items} />
+
+      <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-panel p-5">
+        <div className="flex items-center gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ink">
+            <Icon name="bookOpen" className="size-4 text-white" />
+          </span>
+          <div>
+            <h2 className="text-base font-semibold text-ink">
+              ¿Primera vez reportando una novedad en el campus?
+            </h2>
+            <p className="mt-1 max-w-2xl text-sm text-muted">
+              Conoce la guía paso a paso y resuelve tus dudas frecuentes para
+              radicar fallas en pocos minutos.
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/ayuda"
+          className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-ink shadow-sm transition-colors hover:bg-line"
+        >
+          <Icon name="bookOpen" className="size-4" />
+          Ver Guía y Preguntas Frecuentes
+        </Link>
+      </section>
     </div>
   );
 }
