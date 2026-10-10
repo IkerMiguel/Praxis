@@ -1,38 +1,42 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { RecentReportsList } from "@/components/recent-reports-list";
+import { recentReports } from "@/app/lib/mock-recent-reports";
+import {
+  apiGet,
+  FALLBACK_RESUMEN,
+  type ReporteReciente,
+  type ResumenPanel,
+} from "@/lib/api";
+import { toRecentReports } from "@/lib/adapters";
 
-const demoUser = {
-  name: "Ing. Carlos Mendoza",
-  campus: "CAMPUS CALI",
-  period: "PERIODO ACTIVO",
-  sede: "Sede Cali",
-};
+export default async function PanelPage() {
+  const [resumen, reportes] = await Promise.all([
+    apiGet<ResumenPanel>("/dashboard/resumen", FALLBACK_RESUMEN),
+    apiGet<ReporteReciente[] | null>("/reportes/recientes", null),
+  ]);
 
-const demoStats = {
-  total: 3,
-  enProceso: 2,
-  pendiente: 1,
-};
-
-export default function PanelPage() {
-  const { total, enProceso, pendiente } = demoStats;
-  const procesoPct = (enProceso / total) * 100;
-  const pendientePct = (pendiente / total) * 100;
+  const items = Array.isArray(reportes)
+    ? toRecentReports(reportes)
+    : recentReports;
+  const { solicitudesActivas: total, enProceso, pendienteInformacion: pendiente } =
+    resumen;
+  const atencion = Math.min(100, Math.max(0, resumen.porcentajeAtencion));
 
   return (
     <div className="space-y-6 p-6 lg:p-8">
       <section className="rounded-xl border border-line/60 bg-white p-5 shadow-sm lg:p-6">
         <p className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.55px] text-muted">
           <span className="inline-block size-2 rounded-full bg-emerald-500" />
-          {demoUser.campus} • {demoUser.period}
+          {resumen.campusLabel} •{" "}
+          {resumen.periodoActivo ? "PERIODO ACTIVO" : "PERIODO INACTIVO"}
         </p>
         <h1 className="mt-2 font-display text-2xl font-bold tracking-tight text-ink lg:text-3xl">
-          Hola, {demoUser.name}
+          Hola, {resumen.nombreUsuario}
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-muted">
           Gestiona y consulta el estado de tus reportes de infraestructura en{" "}
-          {demoUser.sede} en tiempo real.
+          {resumen.sede} en tiempo real.
         </p>
       </section>
 
@@ -84,11 +88,11 @@ export default function PanelPage() {
           <div className="mt-4 flex h-2 overflow-hidden rounded-full bg-btn">
             <div
               className="h-full bg-brand"
-              style={{ width: `${procesoPct}%` }}
+              style={{ width: `${atencion}%` }}
             />
             <div
               className="h-full bg-[#b8d4e6]"
-              style={{ width: `${pendientePct}%` }}
+              style={{ width: `${100 - atencion}%` }}
             />
           </div>
 
@@ -100,7 +104,7 @@ export default function PanelPage() {
           </Link>
         </section>
       </div>
-      <RecentReportsList />
+      <RecentReportsList items={items} />
     </div>
   );
 }

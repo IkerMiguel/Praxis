@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons";
-import { recentReports } from "@/app/lib/mock-recent-reports";
+import type { RecentReport } from "@/app/lib/mock-recent-reports";
 
-export function RecentReportsList() {
+export function RecentReportsList({ items }: { items: RecentReport[] }) {
   return (
     <section className="rounded-xl border border-line/60 bg-white p-5 shadow-sm lg:p-6">
       {/* Header */}
@@ -27,7 +27,11 @@ export function RecentReportsList() {
 
       {/* Lista */}
       <ul className="mt-4 divide-y divide-line/60">
-        {recentReports.map((r) => (
+        {items.length === 0 ? (
+          <li className="py-8 text-center text-sm text-muted">
+            Aún no tienes reportes recientes.
+          </li>
+        ) : items.map((r) => (
           <li
             key={r.id}
             className={`flex flex-col gap-3 py-5 lg:flex-row lg:items-center lg:justify-between ${
@@ -50,27 +54,29 @@ export function RecentReportsList() {
                   <Icon name="mapPin" className="size-4 text-brand" />
                   {r.location}
                 </span>
-                <span
-                  className={`inline-flex items-center gap-1.5 ${
-                    r.meta.tone === "warning"
-                      ? "text-orange-700"
-                      : r.meta.tone === "success"
-                        ? "text-emerald-700"
-                        : "text-muted"
-                  }`}
-                >
-                  <Icon
-                    name={
-                      r.meta.icon === "users"
-                        ? "inbox"
-                        : r.meta.icon === "checkCircle"
-                          ? "check"
-                          : "info"
-                    }
-                    className="size-4"
-                  />
-                  {r.meta.text}
-                </span>
+                {r.meta.text ? (
+                  <span
+                    className={`inline-flex items-center gap-1.5 ${
+                      r.meta.tone === "warning"
+                        ? "text-orange-700"
+                        : r.meta.tone === "success"
+                          ? "text-emerald-700"
+                          : "text-muted"
+                    }`}
+                  >
+                    <Icon
+                      name={
+                        r.meta.icon === "users"
+                          ? "inbox"
+                          : r.meta.icon === "checkCircle"
+                            ? "check"
+                            : "info"
+                      }
+                      className="size-4"
+                    />
+                    {r.meta.text}
+                  </span>
+                ) : null}
               </div>
             </div>
 
@@ -98,7 +104,7 @@ export function RecentReportsList() {
   );
 }
 
-function StatusBadge({ status }: { status: (typeof recentReports)[number]["status"] }) {
+function StatusBadge({ status }: { status: RecentReport["status"] }) {
   const map = {
     en_proceso: {
       label: "En Proceso",
