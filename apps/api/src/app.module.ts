@@ -1,6 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsuarioController } from './usuario/usuario.controller';
+import { DashboardController } from './dashboard/dashboard.controller';
+import { ReportesController } from './reportes/reportes.controller';
+
+//import { CatalogosModule } from './catalogos/catalogos.module';
+//import { UsuariosModule } from './usuarios/usuarios.module';
+//import { RequerimientosModule } from './requerimientos/requerimientos.module';
+//import { HistorialModule } from './historial/historial.module';
 
 @Module({
   imports: [
@@ -14,10 +22,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         username: config.get('DATABASE_USER'),
         password: config.get('DATABASE_PASSWORD'),
         database: config.get('DATABASE_NAME'),
-        autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV !== 'production', // solo dev
+        autoLoadEntities: true, 
+        synchronize: true, 
+        namingStrategy: new (require('typeorm-naming-strategies').SnakeNamingStrategy)(), 
       }),
     }),
+    //CatalogosModule,
+    //UsuariosModule,
+    //RequerimientosModule,
+    //HistorialModule,
   ],
+  controllers: [UsuarioController, DashboardController, ReportesController],
 })
 export class AppModule {}
