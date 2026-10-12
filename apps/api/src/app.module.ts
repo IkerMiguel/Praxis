@@ -5,6 +5,7 @@ import { UsuarioController } from './usuario/usuario.controller';
 import { DashboardController } from './dashboard/dashboard.controller';
 import { ReportesController } from './reportes/reportes.controller';
 import { AyudaController } from './ayuda/ayuda.controller';
+import { NotificacionesController } from './notificaciones/notificaciones.controller';
 
 //import { CatalogosModule } from './catalogos/catalogos.module';
 //import { UsuariosModule } from './usuarios/usuarios.module';
@@ -33,6 +34,6 @@ import { AyudaController } from './ayuda/ayuda.controller';
     //RequerimientosModule,
     //HistorialModule,
   ],
-  controllers: [UsuarioController, DashboardController, ReportesController,AyudaController],
+  controllers: [UsuarioController, DashboardController, ReportesController,AyudaController,NotificacionesController],
 })
 export class AppModule {}
