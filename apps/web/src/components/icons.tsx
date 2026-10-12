@@ -140,6 +140,14 @@ const paths: Record<string, JSX.Element> = {
       <path d="M5 21h14" />
     </>
   ),
+  bellOff: (
+    <>
+      <path d="M8.7 5.2A6 6 0 0 1 18 8c0 2.3.3 4 .8 5.3" />
+      <path d="M6 8c0 7-3 9-3 9h13" />
+      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+      <path d="m2 2 20 20" />
+    </>
+  ),
 };
 
 export type IconName = keyof typeof paths;
