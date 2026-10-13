@@ -29,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Header />
             <div className="flex flex-1">
               <Sidebar pendientesInformacion={contador.pendienteInformacion} />
-              <main className="flex-1 bg-panel">{children}</main>
+              <main className="min-w-0 flex-1 bg-panel">{children}</main>
             </div>
           </CompletarInfoProvider>
         </div>

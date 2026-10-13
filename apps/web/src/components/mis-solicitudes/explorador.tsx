@@ -214,7 +214,7 @@ export function ExploradorSolicitudes() {
         />
       ) : (
         <>
-          <div className="overflow-hidden rounded-xl border border-line/60 bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-xl border border-line/60 bg-white shadow-sm">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-line/60 bg-panel text-[11px] font-semibold uppercase tracking-[0.5px] text-muted">
@@ -265,7 +265,7 @@ export function ExploradorSolicitudes() {
                         <button
                           type="button"
                           onClick={() => abrirCompletarInfo(r.id)}
-                          className="inline-flex items-center gap-2 rounded-lg bg-pending-action px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#d97706]"
+                          className="inline-flex items-center gap-2 whitespace-nowrap rounded-lg bg-pending-action px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#d97706]"
                         >
                           Completar Información Requerida
                           <Icon name="arrowRight" className="size-3.5" />
@@ -273,7 +273,7 @@ export function ExploradorSolicitudes() {
                       ) : (
                         <Link
                           href={`/mis-solicitudes/${r.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-btn px-3.5 py-2 text-xs font-semibold text-ink transition-colors hover:bg-line"
+                          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-btn px-3.5 py-2 text-xs font-semibold text-ink transition-colors hover:bg-line"
                         >
                           Ver Detalle
                           <Icon name="chevronRight" className="size-3.5" />
