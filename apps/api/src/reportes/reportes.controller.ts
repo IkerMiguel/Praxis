@@ -1,11 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
+
 
 export enum EstadoTicket {
-
   EN_PROCESO = 'EN_PROCESO',
-  
   PENDIENTE_INFORMACION = 'PENDIENTE_INFORMACION',
-  
   RESUELTO = 'RESUELTO',
 }
 
@@ -13,8 +11,6 @@ export enum AccionTicket {
   VER_DETALLE = 'VER_DETALLE',
   COMPLETAR_INFORMACION = 'COMPLETAR_INFORMACION',
 }
-
-
 
 export interface ReporteReciente {
   id: string;
@@ -26,15 +22,30 @@ export interface ReporteReciente {
   accionPrincipal: AccionTicket;
 }
 
+export interface CrearReportePayload {
+  categoriaSitioId: string;
+  clasificacion: string;
+  descripcion: string;
+  referenciasEvidencia: string[];
+}
+
+export interface ConfirmacionReporteRespuesta {
+  id: string;
+  fechaRegistro: string;
+  estadoInicial: string;
+  categoria: string;
+}
+
 
 @Controller('reportes')
 export class ReportesController {
   
-  // Responde a: GET /reportes/recientes
+  // ---------------------------------------------------------
+  // ENDPOINT 1: GET /reportes/recientes
+  // ---------------------------------------------------------
   @Get('recientes')
   obtenerRecientes(@Query('vacio') vacio?: string): ReporteReciente[] {
     
-    // Variante lista vacía disponible para PRAX-33
     if (vacio === 'true') {
       return [];
     }
@@ -68,5 +79,44 @@ export class ReportesController {
         accionPrincipal: AccionTicket.VER_DETALLE
       }
     ];
+  }
+
+  // ---------------------------------------------------------
+  // ENDPOINT 2: POST /reportes/crear
+  // ---------------------------------------------------------
+  @Post('crear')
+  crearReporte(@Body() payload: CrearReportePayload): ConfirmacionReporteRespuesta {
+    
+    const erroresValidacion: Record<string, string> = {};
+
+    // Validaciones para devolver los errores estructurados al frontend
+    if (!payload.categoriaSitioId) {
+      erroresValidacion['categoriaSitioId'] = 'La categoría principal es obligatoria.';
+    }
+    
+    if (!payload.clasificacion) {
+      erroresValidacion['clasificacion'] = 'Debes seleccionar una subcategoría o clasificación.';
+    }
+
+    if (!payload.descripcion || payload.descripcion.length < 15) {
+      erroresValidacion['descripcion'] = 'La descripción detallada es obligatoria (mín. 15 caracteres).';
+    }
+
+    // Si encontramos algún error, lanzamos un 400 Bad Request estructurado
+    if (Object.keys(erroresValidacion).length > 0) {
+      throw new HttpException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Validación fallida',
+        errores: erroresValidacion 
+      }, HttpStatus.BAD_REQUEST);
+    }
+
+   
+    return {
+      id: '#TKT-2026-0492', 
+      fechaRegistro: new Date().toISOString(),
+      estadoInicial: 'Abierto • En Validación',
+      categoria: 'Electricidad' 
+    };
   }
 }
