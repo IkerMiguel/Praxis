@@ -1,0 +1,1 @@
+export const CONTEO_MOCK_NOTIFICACIONES = 0;
