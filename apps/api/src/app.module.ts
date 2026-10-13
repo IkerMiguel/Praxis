@@ -4,6 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuarioController } from './usuario/usuario.controller';
 import { DashboardController } from './dashboard/dashboard.controller';
 import { ReportesController } from './reportes/reportes.controller';
+import { AyudaController } from './ayuda/ayuda.controller';
+import { NotificacionesController } from './notificaciones/notificaciones.controller';
+import { CatalogosController } from './catalogos/catalogos.controller';
+import { EvidenciasController } from './evidencias/evidencias.controller';
 
 //import { CatalogosModule } from './catalogos/catalogos.module';
 //import { UsuariosModule } from './usuarios/usuarios.module';
@@ -32,6 +36,7 @@ import { ReportesController } from './reportes/reportes.controller';
     //RequerimientosModule,
     //HistorialModule,
   ],
-  controllers: [UsuarioController, DashboardController, ReportesController],
+  controllers: [UsuarioController, DashboardController, ReportesController,AyudaController,
+                NotificacionesController, CatalogosController, EvidenciasController],
 })
 export class AppModule {}
