@@ -28,11 +28,30 @@ const FILTROS_CATEGORIA = [
   { valor: "Cerrajería", label: "Cerrajería" },
 ];
 
+const FILTROS_RANGO = [
+  { valor: "", label: "Todos los períodos" },
+  { valor: "30", label: "Últimos 30 días" },
+  { valor: "7", label: "Últimos 7 días" },
+  { valor: "hoy", label: "Hoy" },
+];
+
+function desdeDeRango(rango: string): number {
+  if (rango === "hoy") {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  }
+  if (rango === "7") return Date.now() - 7 * 24 * 60 * 60 * 1000;
+  if (rango === "30") return Date.now() - 30 * 24 * 60 * 60 * 1000;
+  return 0;
+}
+
 export function ExploradorSolicitudes() {
-  const abrirCompletarInfo = useCompletarInfo();
+  const { abrir: abrirCompletarInfo, version } = useCompletarInfo();
   const [busqueda, setBusqueda] = useState("");
   const [estado, setEstado] = useState("");
   const [categoria, setCategoria] = useState("");
+  const [rango, setRango] = useState("");
   const [pagina, setPagina] = useState(1);
   const [resultado, setResultado] = useState<ResultadoApi<ReporteReciente[]>>({
     estado: "ok",
@@ -40,7 +59,8 @@ export function ExploradorSolicitudes() {
   });
   const [cargandoInicial, setCargandoInicial] = useState(true);
 
-  // Carga inicial + reintento; el listado se refresca tras completar información.
+  // Carga inicial + re-fetch; `version` cambia al completar información,
+  // lo que refresca el listado sin recargar la página.
   useEffect(() => {
     let vivo = true;
     apiGetEstado<ReporteReciente[]>("/reportes/solicitudes").then((r) => {
@@ -51,7 +71,7 @@ export function ExploradorSolicitudes() {
     return () => {
       vivo = false;
     };
-  }, []);
+  }, [version]);
 
   const items = useMemo(
     () => (resultado.estado === "ok" ? resultado.datos : []),
@@ -63,6 +83,10 @@ export function ExploradorSolicitudes() {
     return items.filter((r) => {
       if (estado && r.estado !== estado) return false;
       if (categoria && r.categoria !== categoria) return false;
+      if (rango) {
+        const ts = Date.parse(r.actualizadoEn ?? "");
+        if (Number.isNaN(ts) || ts < desdeDeRango(rango)) return false;
+      }
       if (!q) return true;
       return (
         r.id.toLowerCase().includes(q) ||
@@ -71,7 +95,7 @@ export function ExploradorSolicitudes() {
         (r.mensajeAlerta ?? "").toLowerCase().includes(q)
       );
     });
-  }, [items, busqueda, estado, categoria]);
+  }, [items, busqueda, estado, categoria, rango]);
 
   const totalPaginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
   const paginaActual = Math.min(pagina, totalPaginas);
@@ -148,13 +172,12 @@ export function ExploradorSolicitudes() {
         />
         <SelectFiltro
           label="Rango"
-          valor=""
-          onChange={() => {}}
-          opciones={[
-            { valor: "", label: "Últimos 30 días" },
-            { valor: "7", label: "Últimos 7 días" },
-            { valor: "hoy", label: "Hoy" },
-          ]}
+          valor={rango}
+          onChange={(v) => {
+            setRango(v);
+            setPagina(1);
+          }}
+          opciones={FILTROS_RANGO}
         />
       </div>
 

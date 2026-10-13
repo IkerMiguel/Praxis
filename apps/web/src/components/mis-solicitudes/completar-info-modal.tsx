@@ -19,7 +19,15 @@ import {
 
 type AbrirCompletarInfo = (ticketId: string) => void;
 
-const CompletarInfoContext = createContext<AbrirCompletarInfo>(() => {});
+type CompletarInfoValor = {
+  abrir: AbrirCompletarInfo;
+  version: number;
+};
+
+const CompletarInfoContext = createContext<CompletarInfoValor>({
+  abrir: () => {},
+  version: 0,
+});
 
 export function useCompletarInfo() {
   return useContext(CompletarInfoContext);
@@ -29,14 +37,23 @@ const LIMITE_ARCHIVO = 10 * 1024 * 1024;
 
 export function CompletarInfoProvider({ children }: { children: React.ReactNode }) {
   const [ticketId, setTicketId] = useState<string | null>(null);
+  const [version, setVersion] = useState(0);
 
   const abrir = useCallback((id: string) => setTicketId(id), []);
   const cerrar = useCallback(() => setTicketId(null), []);
+  const notificarExito = useCallback(() => setVersion((v) => v + 1), []);
 
   return (
-    <CompletarInfoContext.Provider value={abrir}>
+    <CompletarInfoContext.Provider value={{ abrir, version }}>
       {children}
-      {ticketId && <Modal key={ticketId} ticketId={ticketId} onCerrar={cerrar} />}
+      {ticketId && (
+        <Modal
+          key={ticketId}
+          ticketId={ticketId}
+          onCerrar={cerrar}
+          onExito={notificarExito}
+        />
+      )}
     </CompletarInfoContext.Provider>
   );
 }
@@ -44,9 +61,11 @@ export function CompletarInfoProvider({ children }: { children: React.ReactNode 
 function Modal({
   ticketId,
   onCerrar,
+  onExito,
 }: {
   ticketId: string;
   onCerrar: () => void;
+  onExito: () => void;
 }) {
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -115,6 +134,7 @@ function Modal({
     }
 
     onCerrar();
+    onExito();
     router.refresh();
   };
 

@@ -18,6 +18,7 @@ export interface ReporteReciente {
   estado: EstadoTicket;
   titulo: string;
   actualizadoHace: string;
+  actualizadoEn: string;
   ubicacion: string;
   categoria: string;
   meta: string;
@@ -116,6 +117,7 @@ function crearBase(): Map<string, DetalleReporte> {
       estado: EstadoTicket.PENDIENTE_INFORMACION,
       titulo: "Lámpara LED parpadeante en Lab 302",
       actualizadoHace: "Ayer, 16:30",
+      actualizadoEn: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
       ubicacion: "Sede Cali • Bloque B • Lab Sistemas 302",
       categoria: "Electricidad",
       meta: "Cuadrilla Eléctrica",
@@ -151,6 +153,7 @@ function crearBase(): Map<string, DetalleReporte> {
       estado: EstadoTicket.EN_PROCESO,
       titulo: "Fuga de agua en lavamanos piso 3",
       actualizadoHace: "Hace 45 min",
+      actualizadoEn: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
       ubicacion: "Sede Cali • Bloque A • Baño Hombres",
       categoria: "Hidráulica",
       meta: "Cuadrilla Hidráulica 02",
@@ -179,6 +182,7 @@ function crearBase(): Map<string, DetalleReporte> {
       estado: EstadoTicket.RESUELTO,
       titulo: "Cerradura averiada en Aula Magna 101",
       actualizadoHace: "02 Mar 2026",
+      actualizadoEn: "2026-03-02T12:40:00.000Z",
       ubicacion: "Sede Cali • Bloque C • Aula Magna",
       categoria: "Cerrajería",
       meta: "Cerrajería",
@@ -253,6 +257,20 @@ export class ReportesController {
       .filter((t): t is DetalleReporte => Boolean(t))
       .filter((t) => !categoria || t.categoria.toLowerCase() === categoria.toLowerCase())
       .map((t) => this.aResumen(t));
+  }
+
+  // ---------------------------------------------------------
+  // ENDPOINT: CONTADOR -> GET /reportes/contador
+  // ---------------------------------------------------------
+  @Get('contador')
+  obtenerContador(): { pendienteInformacion: number } {
+    const pendienteInformacion = this.ordenIds
+      .map((id) => this.base.get(id))
+      .filter((t): t is DetalleReporte => Boolean(t))
+      .filter((t) => t.estado === EstadoTicket.PENDIENTE_INFORMACION)
+      .length;
+
+    return { pendienteInformacion };
   }
 
   // ---------------------------------------------------------
@@ -335,6 +353,7 @@ export class ReportesController {
       estado: EstadoTicket.EN_PROCESO,
       titulo,
       actualizadoHace: 'Hace unos segundos',
+      actualizadoEn: ahora.toISOString(),
       ubicacion: `Sede ${campusCorto} • ${ubicacionFisica}`,
       categoria: cat.corta,
       meta: cat.meta,
@@ -400,6 +419,14 @@ export class ReportesController {
       throw new HttpException('Ticket no encontrado', HttpStatus.NOT_FOUND);
     }
 
+    // Solo un ticket pendiente de información puede completarse.
+    if (ticket.estado !== EstadoTicket.PENDIENTE_INFORMACION) {
+      throw new HttpException(
+        'Este ticket ya no está pendiente de información.',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     // El ticket pendiente pasa a En Proceso con la aclaración del solicitante.
     ticket.estado = EstadoTicket.EN_PROCESO;
     ticket.accionPrincipal = AccionTicket.VER_DETALLE;
@@ -429,6 +456,7 @@ export class ReportesController {
       estado: t.estado,
       titulo: t.titulo,
       actualizadoHace: t.actualizadoHace,
+      actualizadoEn: t.actualizadoEn,
       ubicacion: t.ubicacion,
       categoria: t.categoria,
       meta: t.meta,

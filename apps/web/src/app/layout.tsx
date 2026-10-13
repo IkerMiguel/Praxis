@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { CompletarInfoProvider } from "@/components/mis-solicitudes/completar-info-modal";
+import { apiGet, FALLBACK_CONTADOR, type ContadorReportes } from "@/lib/api";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"] });
@@ -13,7 +14,13 @@ export const metadata: Metadata = {
   description: "Panel de gestión de reportes de infraestructura — Universidad ECCI, Sede Cali.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const contador = await apiGet<ContadorReportes>(
+    "/reportes/contador",
+    FALLBACK_CONTADOR,
+    0,
+  );
+
   return (
     <html lang="es" className={`${inter.variable} ${jakarta.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
@@ -21,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CompletarInfoProvider>
             <Header />
             <div className="flex flex-1">
-              <Sidebar />
+              <Sidebar pendientesInformacion={contador.pendienteInformacion} />
               <main className="flex-1 bg-panel">{children}</main>
             </div>
           </CompletarInfoProvider>

@@ -5,7 +5,7 @@ import { Icon } from "@/components/icons";
 import { useCompletarInfo } from "@/components/mis-solicitudes/completar-info-modal";
 
 export function BotonResponderYSubsanar({ ticketId }: { ticketId: string }) {
-  const abrirCompletarInfo = useCompletarInfo();
+  const { abrir: abrirCompletarInfo } = useCompletarInfo();
 
   return (
     <button

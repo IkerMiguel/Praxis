@@ -27,6 +27,7 @@ export type ReporteReciente = {
   estado: EstadoTicket;
   titulo: string;
   actualizadoHace: string;
+  actualizadoEn: string;
   ubicacion: string;
   categoria: string;
   meta: string;
@@ -59,6 +60,10 @@ export type CompletarInformacionRespuesta = {
 
 export type ResumenNotificaciones = {
   notificacionesPendientes: number;
+};
+
+export type ContadorReportes = {
+  pendienteInformacion: number;
 };
 
 export type CategoriaSitio = {
@@ -115,12 +120,17 @@ export const FALLBACK_RESUMEN: ResumenPanel = {
   porcentajeAtencion: 66,
 };
 
+export const FALLBACK_CONTADOR: ContadorReportes = {
+  pendienteInformacion: 0,
+};
+
 export const FALLBACK_SOLICITUDES: ReporteReciente[] = [
   {
     id: "TKT-2026-0472",
     estado: "PENDIENTE_INFORMACION",
     titulo: "Lámpara LED parpadeante en Lab 302",
     actualizadoHace: "Ayer, 16:30",
+    actualizadoEn: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
     ubicacion: "Sede Cali • Bloque B • Lab Sistemas 302",
     categoria: "Electricidad",
     meta: "Cuadrilla Eléctrica",
@@ -132,6 +142,7 @@ export const FALLBACK_SOLICITUDES: ReporteReciente[] = [
     estado: "EN_PROCESO",
     titulo: "Fuga de agua en lavamanos piso 3",
     actualizadoHace: "Hace 45 min",
+    actualizadoEn: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
     ubicacion: "Sede Cali • Bloque A • Baño Hombres",
     categoria: "Hidráulica",
     meta: "Cuadrilla Hidráulica 02",
@@ -142,6 +153,7 @@ export const FALLBACK_SOLICITUDES: ReporteReciente[] = [
     estado: "RESUELTO",
     titulo: "Cerradura averiada en Aula Magna 101",
     actualizadoHace: "02 Mar 2026",
+    actualizadoEn: "2026-03-02T12:40:00.000Z",
     ubicacion: "Sede Cali • Bloque C • Aula Magna",
     categoria: "Cerrajería",
     meta: "Cerrajería",
@@ -156,6 +168,7 @@ export const FALLBACK_DETALLE: DetalleReporte = {
   estado: "PENDIENTE_INFORMACION",
   titulo: "Lámpara LED parpadeante en Lab 302",
   actualizadoHace: "Ayer, 16:30",
+  actualizadoEn: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
   ubicacion: "Sede Cali • Bloque B • Lab Sistemas 302",
   categoria: "Electricidad",
   categoriaTecnica: "Electricidad",

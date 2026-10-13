@@ -9,26 +9,39 @@ const linkBase =
 const linkIdle = `${linkBase} text-muted hover:bg-panel text-[14px] leading-5`;
 const linkActive = `${linkBase} bg-ink text-[13px] font-semibold leading-[18px] text-white shadow-sm`;
 
-const items = [
-  { href: "/panel", label: "Inicio / Panel", icon: "home" as const },
-  { href: "/reportes/nuevo", label: "Nuevo Reporte", icon: "plus" as const },
-  {
-    href: "/mis-solicitudes",
-    label: "Mis Solicitudes",
-    icon: "inbox" as const,
-    badge: 3,
-  },
+type ItemNav = {
+  href: string;
+  label: string;
+  icon: "home" | "plus" | "inbox" | "help";
+  badge?: number;
+  support?: boolean;
+};
+
+const items: ItemNav[] = [
+  { href: "/panel", label: "Inicio / Panel", icon: "home" },
+  { href: "/reportes/nuevo", label: "Nuevo Reporte", icon: "plus" },
+  { href: "/mis-solicitudes", label: "Mis Solicitudes", icon: "inbox" },
   {
     href: "/ayuda",
     label: "Ayuda / Preguntas Frecuentes",
-    icon: "help" as const,
+    icon: "help",
     support: true,
   },
 ];
 
-export function Sidebar() {
+export function Sidebar({
+  pendientesInformacion,
+}: {
+  pendientesInformacion: number;
+}) {
   const pathname = usePathname();
-  const principal = items.filter((i) => !i.support);
+  const badgeMisSolicitudes =
+    pendientesInformacion > 0 ? pendientesInformacion : undefined;
+  const principal = items
+    .filter((i) => !i.support)
+    .map((i) =>
+      i.href === "/mis-solicitudes" ? { ...i, badge: badgeMisSolicitudes } : i,
+    );
   const soporte = items.filter((i) => i.support);
 
   const badgeTone =

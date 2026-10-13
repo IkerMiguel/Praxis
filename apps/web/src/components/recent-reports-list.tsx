@@ -6,7 +6,7 @@ import { useCompletarInfo } from "@/components/mis-solicitudes/completar-info-mo
 import type { RecentReport } from "@/app/lib/mock-recent-reports";
 
 export function RecentReportsList({ items }: { items: RecentReport[] }) {
-  const abrirCompletarInfo = useCompletarInfo();
+  const { abrir: abrirCompletarInfo } = useCompletarInfo();
 
   return (
     <section className="rounded-xl border border-line/60 bg-white p-5 shadow-sm lg:p-6">
