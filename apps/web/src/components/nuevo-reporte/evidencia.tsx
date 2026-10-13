@@ -5,28 +5,15 @@ import Image from "next/image";
 import { Icon } from "@/components/icons";
 
 const MAX_FILES = 4;
+const LIMITE_BYTES = 10 * 1024 * 1024; // 10 MB
+const FORMATOS_PERMITIDOS = ["image/jpeg", "image/png"];
 
-type Attached = {
+export type Adjunto = {
   id: string;
   name: string;
   sizeBytes: number;
   url: string;
 };
-
-const defaults: Attached[] = [
-  {
-    id: "d1",
-    name: "panel_luces_falla1.jpg",
-    sizeBytes: 2.4 * 1024 * 1024,
-    url: "/tkt-panel-luces.png",
-  },
-  {
-    id: "d2",
-    name: "techo_luminarias_lab302.jpg",
-    sizeBytes: 1.8 * 1024 * 1024,
-    url: "/tkt-techo-luminarias.png",
-  },
-];
 
 function formatMB(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
@@ -38,30 +25,53 @@ function newId() {
     : String(Date.now() + Math.random());
 }
 
-export function EvidenciaFotografica() {
+export function EvidenciaFotografica({
+  value,
+  onChange,
+}: {
+  value: Adjunto[];
+  onChange: (items: Adjunto[]) => void;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [items, setItems] = useState<Attached[]>(defaults);
+  const [error, setError] = useState<string | null>(null);
 
-  const totalMB = items.reduce((acc, i) => acc + i.sizeBytes, 0);
+  const totalMB = value.reduce((acc, i) => acc + i.sizeBytes, 0);
 
   const addFiles = (list: FileList | null) => {
     if (!list) return;
-    const files = Array.from(list).filter((f) => f.type.startsWith("image/"));
-    setItems((prev) => {
-      const room = MAX_FILES - prev.length;
-      const next = files.slice(0, room).map((f) => ({
-        id: newId(),
-        name: f.name,
-        sizeBytes: f.size,
-        url: URL.createObjectURL(f),
-      }));
-      return [...prev, ...next];
-    });
+    const archivos = Array.from(list);
+
+    // Reglas de la DISE: solo JPG/PNG hasta 10MB por archivo.
+    const formatoInvalido = archivos.find(
+      (f) => !FORMATOS_PERMITIDOS.includes(f.type),
+    );
+    if (formatoInvalido) {
+      setError(`«${formatoInvalido.name}» no es un formato admitido. Usa JPG o PNG.`);
+      return;
+    }
+
+    const demasiadoGrande = archivos.find((f) => f.size > LIMITE_BYTES);
+    if (demasiadoGrande) {
+      setError(`«${demasiadoGrande.name}» supera el límite de 10MB por archivo.`);
+      return;
+    }
+
+    const room = MAX_FILES - value.length;
+    const nuevos = archivos.slice(0, room).map((f) => ({
+      id: newId(),
+      name: f.name,
+      sizeBytes: f.size,
+      url: URL.createObjectURL(f),
+    }));
+    if (nuevos.length > 0) {
+      setError(null);
+      onChange([...value, ...nuevos]);
+    }
   };
 
-  const remove = (item: Attached) => {
+  const remove = (item: Adjunto) => {
     if (item.url.startsWith("blob:")) URL.revokeObjectURL(item.url);
-    setItems((prev) => prev.filter((i) => i.id !== item.id));
+    onChange(value.filter((i) => i.id !== item.id));
   };
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
@@ -69,7 +79,7 @@ export function EvidenciaFotografica() {
     addFiles(e.dataTransfer.files);
   };
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     addFiles(e.target.files);
     e.target.value = "";
   };
@@ -78,16 +88,16 @@ export function EvidenciaFotografica() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-[13px] font-semibold leading-[18px] text-[#191c1e]">
-          Archivos adjuntos ({items.length} de {MAX_FILES} permitidos)
+          Archivos adjuntos ({value.length} de {MAX_FILES} permitidos)
         </span>
         <span className="text-[12px] leading-4 text-muted">
           Total: {formatMB(totalMB)}
         </span>
       </div>
 
-      {items.length > 0 ? (
+      {value.length > 0 ? (
         <div className="mt-3 grid gap-3 md:grid-cols-2">
-          {items.map((item) => (
+          {value.map((item) => (
             <div
               key={item.id}
               className="relative flex items-center gap-3 rounded-md bg-panel p-3 shadow-sm"
@@ -124,14 +134,12 @@ export function EvidenciaFotografica() {
         </div>
       ) : null}
 
-      {items.length < MAX_FILES ? (
+      {value.length < MAX_FILES ? (
         <div
           onDragOver={(e) => e.preventDefault()}
           onDrop={onDrop}
           onClick={() => inputRef.current?.click()}
-          className={`mt-3 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-line bg-panel px-6 py-8 text-center ${
-            items.length ? "mt-4" : "mt-0"
-          }`}
+          className="mt-3 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-line bg-panel px-6 py-8 text-center"
         >
           <span className="flex size-14 items-center justify-center rounded-xl bg-white shadow-sm">
             <Icon name="uploadCloud" className="size-7 text-brand" />
@@ -155,9 +163,19 @@ export function EvidenciaFotografica() {
             accept="image/jpeg,image/png"
             multiple
             className="hidden"
-            onChange={onChange}
+            onChange={onChangeInput}
           />
         </div>
+      ) : null}
+
+      {error ? (
+        <p
+          role="alert"
+          className="mt-3 flex items-start gap-2 rounded-md border border-[#ba1a1a]/40 bg-[#fdecea] px-3 py-2 text-[12px] leading-4 text-[#7f1d1d]"
+        >
+          <Icon name="alertTriangle" className="mt-px size-3 shrink-0 text-[#ba1a1a]" />
+          {error}
+        </p>
       ) : null}
     </div>
   );

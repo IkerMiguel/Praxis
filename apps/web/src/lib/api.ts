@@ -61,6 +61,41 @@ export type ResumenNotificaciones = {
   notificacionesPendientes: number;
 };
 
+export type CategoriaSitio = {
+  id: string;
+  etiqueta: string;
+};
+
+export type Subcategoria = {
+  id: string;
+  etiqueta: string;
+  categoriaId: string;
+};
+
+export type CrearReportePayload = {
+  sede: string;
+  bloque: string;
+  piso: string;
+  espacioEspecifico: string;
+  categoriaSitioId: string;
+  clasificacion: string;
+  descripcion: string;
+  referenciasEvidencia: string[];
+};
+
+export type ConfirmacionReporte = {
+  id: string;
+  fechaRegistro: string;
+  estadoInicial: string;
+  categoria: string;
+  ubicacion: {
+    campus: string;
+    bloque: string;
+    piso: string;
+    espacio: string;
+  };
+};
+
 export const FALLBACK_PERFIL: PerfilUsuario = {
   nombre: "Ing. Carlos Mendoza",
   rol: "Docente / Solicitante",
@@ -155,6 +190,41 @@ export const FALLBACK_DETALLE: DetalleReporte = {
     },
   ],
 };
+
+// Catálogos del formulario de nuevo reporte (mismos datos que la API).
+export const FALLBACK_CATEGORIAS: CategoriaSitio[] = [
+  { id: "CAT-ELEC", etiqueta: "Electricidad / Iluminación" },
+  { id: "CAT-HIDR", etiqueta: "Hidráulica / Plomería" },
+  { id: "CAT-MOB", etiqueta: "Mobiliario / Carpintería" },
+  { id: "CAT-TEC", etiqueta: "Tecnología / Redes y Equipos" },
+  { id: "CAT-INFRA", etiqueta: "Infraestructura / Obra Civil" },
+];
+
+export const FALLBACK_SUBCATEGORIAS: Subcategoria[] = [
+  { id: "SUB-ELEC-LUM", etiqueta: "Luminarias / Paneles de techo", categoriaId: "CAT-ELEC" },
+  { id: "SUB-ELEC-TOM", etiqueta: "Tomas y cableado", categoriaId: "CAT-ELEC" },
+  { id: "SUB-ELEC-TAB", etiqueta: "Tableros eléctricos", categoriaId: "CAT-ELEC" },
+  { id: "SUB-ELEC-EME", etiqueta: "Iluminación de emergencia", categoriaId: "CAT-ELEC" },
+  { id: "SUB-HIDR-FUG", etiqueta: "Fugas / Goteos", categoriaId: "CAT-HIDR" },
+  { id: "SUB-HIDR-TAN", etiqueta: "Tanques y cisternas", categoriaId: "CAT-HIDR" },
+  { id: "SUB-HIDR-DRE", etiqueta: "Drenajes y tuberías", categoriaId: "CAT-HIDR" },
+  { id: "SUB-MOB-MES", etiqueta: "Mesas y sillas", categoriaId: "CAT-MOB" },
+  { id: "SUB-MOB-PUE", etiqueta: "Puertas y cerraduras", categoriaId: "CAT-MOB" },
+  { id: "SUB-MOB-EST", etiqueta: "Estanterías / Armarios", categoriaId: "CAT-MOB" },
+  { id: "SUB-TEC-RED", etiqueta: "Redes y cableado", categoriaId: "CAT-TEC" },
+  { id: "SUB-TEC-EQP", etiqueta: "Equipos de cómputo", categoriaId: "CAT-TEC" },
+  { id: "SUB-TEC-PRO", etiqueta: "Proyectores y pantallas", categoriaId: "CAT-TEC" },
+  { id: "SUB-INF-PIN", etiqueta: "Pintura", categoriaId: "CAT-INFRA" },
+  { id: "SUB-INF-MUR", etiqueta: "Muros y pisos", categoriaId: "CAT-INFRA" },
+  { id: "SUB-INF-TEC", etiqueta: "Techos y estructuras", categoriaId: "CAT-INFRA" },
+];
+
+export function subcategoriasDe(
+  categoriaId: string,
+  todas: Subcategoria[] = FALLBACK_SUBCATEGORIAS,
+): Subcategoria[] {
+  return todas.filter((s) => s.categoriaId === categoriaId);
+}
 
 export async function apiGet<T>(
   path: string,

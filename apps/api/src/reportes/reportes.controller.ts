@@ -43,6 +43,10 @@ export interface DetalleReporte extends ReporteReciente {
 }
 
 export interface CrearReportePayload {
+  sede: string;
+  bloque: string;
+  piso: string;
+  espacioEspecifico: string;
   categoriaSitioId: string;
   clasificacion: string;
   descripcion: string;
@@ -54,6 +58,12 @@ export interface ConfirmacionReporteRespuesta {
   fechaRegistro: string;
   estadoInicial: string;
   categoria: string;
+  ubicacion: {
+    campus: string;
+    bloque: string;
+    piso: string;
+    espacio: string;
+  };
 }
 
 export interface CompletarInformacionPayload {
@@ -70,6 +80,34 @@ export interface CompletarInformacionRespuesta {
 // BASE MOCK EN MEMORIA
 // El estado vive en memoria para que completar información cambie el
 // ticket de PENDIENTE_INFORMACION a EN_PROCESO en listado y detalle.
+
+// Etiquetas del catálogo, usadas para armar el ticket creado.
+const CATALOGO_CATEGORIAS: Record<string, { etiqueta: string; corta: string; meta: string }> = {
+  'CAT-ELEC': { etiqueta: 'Electricidad / Iluminación', corta: 'Electricidad', meta: 'Cuadrilla Eléctrica' },
+  'CAT-HIDR': { etiqueta: 'Hidráulica / Plomería', corta: 'Hidráulica', meta: 'Cuadrilla Hidráulica' },
+  'CAT-MOB': { etiqueta: 'Mobiliario / Carpintería', corta: 'Carpintería', meta: 'Cuadrilla Carpintería' },
+  'CAT-TEC': { etiqueta: 'Tecnología / Redes y Equipos', corta: 'Redes', meta: 'Cuadrilla Redes' },
+  'CAT-INFRA': { etiqueta: 'Infraestructura / Obra Civil', corta: 'Obra Civil', meta: 'Cuadrilla Obra Civil' },
+};
+
+const CATALOGO_SUBCATEGORIAS: Record<string, string> = {
+  'SUB-ELEC-LUM': 'Luminarias / Paneles de techo',
+  'SUB-ELEC-TOM': 'Tomas y cableado',
+  'SUB-ELEC-TAB': 'Tableros eléctricos',
+  'SUB-ELEC-EME': 'Iluminación de emergencia',
+  'SUB-HIDR-FUG': 'Fugas / Goteos',
+  'SUB-HIDR-TAN': 'Tanques y cisternas',
+  'SUB-HIDR-DRE': 'Drenajes y tuberías',
+  'SUB-MOB-MES': 'Mesas y sillas',
+  'SUB-MOB-PUE': 'Puertas y cerraduras',
+  'SUB-MOB-EST': 'Estanterías / Armarios',
+  'SUB-TEC-RED': 'Redes y cableado',
+  'SUB-TEC-EQP': 'Equipos de cómputo',
+  'SUB-TEC-PRO': 'Proyectores y pantallas',
+  'SUB-INF-PIN': 'Pintura',
+  'SUB-INF-MUR': 'Muros y pisos',
+  'SUB-INF-TEC': 'Techos y estructuras',
+};
 
 function crearBase(): Map<string, DetalleReporte> {
   const tickets: DetalleReporte[] = [
@@ -182,6 +220,14 @@ export class ReportesController {
 
   private readonly base = crearBase();
 
+  // Orden de aparición en el listado (los nuevos van primero).
+  private readonly ordenIds: string[] = [
+    'TKT-2026-0472', 'TKT-2026-0489', 'TKT-2026-0450',
+  ];
+
+  // Siguiente número de ticket a radicar.
+  private siguienteNumero = 492;
+
   // ---------------------------------------------------------
   // ENDPOINT 1: LISTADO -> GET /reportes/solicitudes
   // ---------------------------------------------------------
@@ -202,9 +248,7 @@ export class ReportesController {
       return [];
     }
 
-    const orden = ['TKT-2026-0472', 'TKT-2026-0489', 'TKT-2026-0450'];
-
-    return orden
+    return this.ordenIds
       .map((id) => this.base.get(id))
       .filter((t): t is DetalleReporte => Boolean(t))
       .filter((t) => !categoria || t.categoria.toLowerCase() === categoria.toLowerCase())
@@ -231,16 +275,28 @@ export class ReportesController {
   // ---------------------------------------------------------
   @Post('crear')
   crearReporte(@Body() payload: CrearReportePayload): ConfirmacionReporteRespuesta {
-    
+
     const erroresValidacion: Record<string, string> = {};
 
+    if (!payload.sede) {
+      erroresValidacion['sede'] = 'Debes seleccionar la sede / campus.';
+    }
+    if (!payload.bloque) {
+      erroresValidacion['bloque'] = 'Debes seleccionar el bloque / edificio.';
+    }
+    if (!payload.piso) {
+      erroresValidacion['piso'] = 'Debes seleccionar el piso / nivel.';
+    }
+    if (!payload.espacioEspecifico || payload.espacioEspecifico.trim().length < 5) {
+      erroresValidacion['espacioEspecifico'] = 'Describe el espacio específico (mín. 5 caracteres).';
+    }
     if (!payload.categoriaSitioId) {
       erroresValidacion['categoriaSitioId'] = 'La categoría principal es obligatoria.';
     }
     if (!payload.clasificacion) {
       erroresValidacion['clasificacion'] = 'Debes seleccionar una subcategoría o clasificación.';
     }
-    if (!payload.descripcion || payload.descripcion.length < 15) {
+    if (!payload.descripcion || payload.descripcion.trim().length < 15) {
       erroresValidacion['descripcion'] = 'La descripción detallada es obligatoria (mín. 15 caracteres).';
     }
 
@@ -248,15 +304,70 @@ export class ReportesController {
       throw new HttpException({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Validación fallida',
-        errores: erroresValidacion 
+        errores: erroresValidacion
       }, HttpStatus.BAD_REQUEST);
     }
 
+    const cat = CATALOGO_CATEGORIAS[payload.categoriaSitioId] ?? CATALOGO_CATEGORIAS['CAT-ELEC'];
+    const subEtiqueta = CATALOGO_SUBCATEGORIAS[payload.clasificacion] ?? payload.clasificacion;
+
+    const id = `TKT-2026-0${this.siguienteNumero}`;
+    this.siguienteNumero += 1;
+
+    const ahora = new Date();
+    const horaLocal = ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+    const fechaRadicacion = ahora.toLocaleDateString('es-CO', {
+      day: '2-digit', month: 'long', year: 'numeric',
+    }) + ` • ${horaLocal}`;
+
+    const descripcion = payload.descripcion.trim();
+    const primeraOracion = descripcion.split(/[.\n]/)[0].trim();
+    const titulo = primeraOracion.length > 70
+      ? primeraOracion.slice(0, 67) + '…'
+      : primeraOracion;
+
+    const campus = payload.sede;
+    const ubicacionFisica = `${payload.bloque} • ${payload.piso} • ${payload.espacioEspecifico.trim()}`;
+    const campusCorto = campus.replace(/^Universidad ECCI - /, '');
+
+    const ticket: DetalleReporte = {
+      id,
+      estado: EstadoTicket.EN_PROCESO,
+      titulo,
+      actualizadoHace: 'Hace unos segundos',
+      ubicacion: `Sede ${campusCorto} • ${ubicacionFisica}`,
+      categoria: cat.corta,
+      meta: cat.meta,
+      accionPrincipal: AccionTicket.VER_DETALLE,
+      campus,
+      ubicacionFisica,
+      categoriaTecnica: `${cat.etiqueta} — ${subEtiqueta}`,
+      fechaRadicacion,
+      descripcionInicial: descripcion,
+      evidencias: payload.referenciasEvidencia ?? [],
+      trazabilidad: [
+        {
+          estado: 'Reporte Registrado',
+          fecha: `Hoy • ${horaLocal}`,
+          descripcion: 'Radicado exitosamente por Ing. Carlos Mendoza.',
+        },
+      ],
+    };
+
+    this.base.set(id, ticket);
+    this.ordenIds.unshift(id);
+
     return {
-      id: '#TKT-2026-0492',
-      fechaRegistro: new Date().toISOString(),
+      id,
+      fechaRegistro: ahora.toISOString(),
       estadoInicial: 'Abierto • En Validación',
-      categoria: 'Electricidad' 
+      categoria: cat.corta,
+      ubicacion: {
+        campus,
+        bloque: payload.bloque,
+        piso: payload.piso,
+        espacio: payload.espacioEspecifico.trim(),
+      },
     };
   }
 
