@@ -14,6 +14,19 @@ export type RecentReport = {
 
 export const recentReports: RecentReport[] = [
   {
+    id: "#TKT-2026-0472",
+    status: "pendiente_info",
+    updatedLabel: "Ayer, 16:30",
+    title: "Lámpara LED parpadeante en Lab 302",
+    location: "Sede Cali • Bloque B • Lab Sistemas 302",
+    meta: {
+      icon: "message",
+      text: "Reclamo técnico: requiere aclaración de balastro",
+      tone: "warning",
+    },
+    action: "completar_info",
+  },
+  {
     id: "#TKT-2026-0489",
     status: "en_proceso",
     updatedLabel: "Hace 45 min",
@@ -23,24 +36,11 @@ export const recentReports: RecentReport[] = [
     action: "ver_detalle",
   },
   {
-    id: "#TKT-2026-0472",
-    status: "pendiente_info",
-    updatedLabel: "Ayer, 16:30",
-    title: "Iluminación intermitente en aula 204",
-    location: "Sede Cali • Bloque C • Aula 204",
-    meta: {
-      icon: "message",
-      text: "Requiere aclaración técnica de balastro",
-      tone: "warning",
-    },
-    action: "completar_info",
-  },
-  {
-    id: "#TKT-2026-0455",
+    id: "#TKT-2026-0450",
     status: "resuelto",
     updatedLabel: "02 Mar 2026",
-    title: "Puerta de acceso principal con falla en cerradura",
-    location: "Sede Cali • Acceso Principal",
+    title: "Cerradura averiada en Aula Magna 101",
+    location: "Sede Cali • Bloque C • Aula Magna",
     meta: { icon: "checkCircle", text: "Conformidad firmada", tone: "success" },
     action: "ver_detalle",
   },
