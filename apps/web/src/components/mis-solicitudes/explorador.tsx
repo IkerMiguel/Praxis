@@ -242,7 +242,7 @@ export function ExploradorSolicitudes() {
                       </p>
                     </td>
                     <td className="px-5 py-4 align-top">
-                      <p className="font-semibold text-ink">{r.titulo}</p>
+                      <p className="font-semibold text-ink break-all">{r.titulo}</p>
                       <p className="mt-1 text-xs text-muted">{r.ubicacion}</p>
                       {r.mensajeAlerta && (
                         <div className="mt-1.5">

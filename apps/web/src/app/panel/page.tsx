@@ -12,8 +12,8 @@ import { toRecentReports } from "@/lib/adapters";
 
 export default async function PanelPage() {
   const [resumen, reportes] = await Promise.all([
-    apiGet<ResumenPanel>("/dashboard/resumen", FALLBACK_RESUMEN),
-    apiGet<ReporteReciente[] | null>("/reportes/solicitudes", null),
+    apiGet<ResumenPanel>("/dashboard/resumen", FALLBACK_RESUMEN, 0),
+    apiGet<ReporteReciente[] | null>("/reportes/solicitudes", null, 0),
   ]);
 
   const items = Array.isArray(reportes)

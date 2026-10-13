@@ -52,7 +52,7 @@ export function RecentReportsList({ items }: { items: RecentReport[] }) {
                 <span className="text-muted">• {r.updatedLabel}</span>
               </div>
 
-              <p className="mt-1 text-base font-semibold text-ink">{r.title}</p>
+              <p className="mt-1 text-base font-semibold text-ink break-words">{r.title}</p>
 
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
                 <span className="inline-flex items-center gap-1.5">

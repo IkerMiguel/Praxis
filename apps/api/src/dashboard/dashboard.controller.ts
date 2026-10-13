@@ -1,4 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { ReportesService } from '../reportes/reportes.service';
 
 // 1. Definimos la interfaz del contrato esperado por el Frontend
 export interface ResumenSolicitudes {
@@ -15,7 +16,9 @@ export interface ResumenSolicitudes {
 // 2. Definimos la ruta base dashboard
 @Controller('dashboard')
 export class DashboardController {
-  
+
+  constructor(private readonly reportes: ReportesService) {}
+
   // Responde a: GET /api/dashboard/resumen
   // Acepta una query opcional para el escenario vacío: /api/dashboard/resumen?vacio=true
   @Get('resumen')
@@ -35,15 +38,18 @@ export class DashboardController {
       };
     }
 
+    const { total, enProceso, pendienteInformacion } = this.reportes.contar();
+    const atencion = total > 0 ? Math.round((enProceso / total) * 100) : 0;
+
     return {
       nombreUsuario: "Ing. Carlos Mendoza",
       sede: "Sede Cali",
       campusLabel: "CAMPUS CALI",
       periodoActivo: true,
-      solicitudesActivas: 3,
-      enProceso: 2,
-      pendienteInformacion: 1,
-      porcentajeAtencion: 66 
+      solicitudesActivas: total,
+      enProceso,
+      pendienteInformacion,
+      porcentajeAtencion: atencion 
     };
   }
 }
