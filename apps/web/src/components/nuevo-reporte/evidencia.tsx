@@ -95,6 +95,40 @@ export function EvidenciaFotografica({
         </span>
       </div>
 
+      {value.length < MAX_FILES ? (
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={onDrop}
+          onClick={() => inputRef.current?.click()}
+          className="mt-3 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-line bg-panel px-6 py-8 text-center"
+        >
+          <span className="flex size-14 items-center justify-center rounded-xl bg-white shadow-sm">
+            <Icon name="uploadCloud" className="size-7 text-brand" />
+          </span>
+          <p className="mt-1 text-[13px] font-semibold leading-[18px] text-ink">
+            Arrastra y suelta fotografías del daño o haz clic para explorar
+          </p>
+          <p className="text-[12px] leading-4 text-muted">
+            Formatos admitidos: JPG, PNG hasta 10MB por archivo (Máx.{" "}
+            {MAX_FILES} fotos)
+          </p>
+          <span className="mt-2 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 shadow-sm">
+            <Icon name="image" className="size-3 text-brand" />
+            <span className="text-[11px] font-semibold tracking-[0.44px] text-brand">
+              Seleccionar desde este dispositivo
+            </span>
+          </span>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/jpeg,image/png"
+            multiple
+            className="hidden"
+            onChange={onChangeInput}
+          />
+        </div>
+      ) : null}
+
       {value.length > 0 ? (
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           {value.map((item) => (
@@ -131,40 +165,6 @@ export function EvidenciaFotografica({
               </button>
             </div>
           ))}
-        </div>
-      ) : null}
-
-      {value.length < MAX_FILES ? (
-        <div
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={onDrop}
-          onClick={() => inputRef.current?.click()}
-          className="mt-3 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-line bg-panel px-6 py-8 text-center"
-        >
-          <span className="flex size-14 items-center justify-center rounded-xl bg-white shadow-sm">
-            <Icon name="uploadCloud" className="size-7 text-brand" />
-          </span>
-          <p className="mt-1 text-[13px] font-semibold leading-[18px] text-ink">
-            Arrastra y suelta fotografías del daño o haz clic para explorar
-          </p>
-          <p className="text-[12px] leading-4 text-muted">
-            Formatos admitidos: JPG, PNG hasta 10MB por archivo (Máx.{" "}
-            {MAX_FILES} fotos)
-          </p>
-          <span className="mt-2 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 shadow-sm">
-            <Icon name="image" className="size-3 text-brand" />
-            <span className="text-[11px] font-semibold tracking-[0.44px] text-brand">
-              Seleccionar desde este dispositivo
-            </span>
-          </span>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/jpeg,image/png"
-            multiple
-            className="hidden"
-            onChange={onChangeInput}
-          />
         </div>
       ) : null}
 
