@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { Icon } from "@/components/icons";
+import { useCompletarInfo } from "@/components/mis-solicitudes/completar-info-modal";
 import type { RecentReport } from "@/app/lib/mock-recent-reports";
 
 export function RecentReportsList({ items }: { items: RecentReport[] }) {
+  const { abrir: abrirCompletarInfo } = useCompletarInfo();
+
   return (
     <section className="rounded-xl border border-line/60 bg-white p-5 shadow-sm lg:p-6">
       {/* Header */}
@@ -47,7 +52,7 @@ export function RecentReportsList({ items }: { items: RecentReport[] }) {
                 <span className="text-muted">• {r.updatedLabel}</span>
               </div>
 
-              <p className="mt-1 text-base font-semibold text-ink">{r.title}</p>
+              <p className="mt-1 text-base font-semibold text-ink break-words">{r.title}</p>
 
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
                 <span className="inline-flex items-center gap-1.5">
@@ -81,16 +86,17 @@ export function RecentReportsList({ items }: { items: RecentReport[] }) {
             </div>
 
             {r.action === "completar_info" ? (
-              <Link
-                href="/mis-solicitudes"
-                className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-pending-action px-4 py-2.5 text-sm font-semibold text-white"
+              <button
+                type="button"
+                onClick={() => abrirCompletarInfo(r.id.replace("#", ""))}
+                className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-pending-action px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#d97706]"
               >
                 Completar Información Requerida
                 <Icon name="arrowRight" className="size-4" />
-              </Link>
+              </button>
             ) : (
               <Link
-                href="/mis-solicitudes"
+                href={`/mis-solicitudes/${r.id.replace("#", "")}`}
                 className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-btn px-4 py-2.5 text-sm font-semibold text-ink"
               >
                 Ver Detalle

@@ -8,6 +8,7 @@ import { AyudaController } from './ayuda/ayuda.controller';
 import { NotificacionesController } from './notificaciones/notificaciones.controller';
 import { CatalogosController } from './catalogos/catalogos.controller';
 import { EvidenciasController } from './evidencias/evidencias.controller';
+import { ReportesService } from './reportes/reportes.service';
 
 //import { CatalogosModule } from './catalogos/catalogos.module';
 //import { UsuariosModule } from './usuarios/usuarios.module';
@@ -38,5 +39,6 @@ import { EvidenciasController } from './evidencias/evidencias.controller';
   ],
   controllers: [UsuarioController, DashboardController, ReportesController,AyudaController,
                 NotificacionesController, CatalogosController, EvidenciasController],
+  providers: [ReportesService],
 })
 export class AppModule {}

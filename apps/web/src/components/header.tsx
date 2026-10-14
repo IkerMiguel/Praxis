@@ -5,17 +5,37 @@ import {
   apiGet,
   FALLBACK_PERFIL,
   type PerfilUsuario,
+  type ResumenNotificaciones,
 } from "@/lib/api";
-import { CONTEO_MOCK_NOTIFICACIONES } from "@/lib/notificaciones";
+import {
+  CONTEO_MOCK_NOTIFICACIONES,
+  FALLBACK_NOTIFICACIONES,
+  type ItemNotificacion,
+} from "@/lib/notificaciones";
+
+type ListadoNotificaciones = {
+  items: ItemNotificacion[];
+};
 
 export async function Header() {
-  const [perfil, conteoCrudo] = await Promise.all([
+  const [perfil, resumen, listado] = await Promise.all([
     apiGet<PerfilUsuario>("/user/me", FALLBACK_PERFIL),
-    apiGet<number>("/notificaciones/conteo", CONTEO_MOCK_NOTIFICACIONES),
+    apiGet<ResumenNotificaciones>(
+      "/notificaciones/resumen",
+      { notificacionesPendientes: CONTEO_MOCK_NOTIFICACIONES },
+      0,
+    ),
+    apiGet<ListadoNotificaciones>(
+      "/notificaciones/listado",
+      { items: FALLBACK_NOTIFICACIONES },
+      0,
+    ),
   ]);
   const conteoNotificaciones =
-    typeof conteoCrudo === "number" && Number.isFinite(conteoCrudo) && conteoCrudo >= 0
-      ? Math.floor(conteoCrudo)
+    typeof resumen.notificacionesPendientes === "number" &&
+    Number.isFinite(resumen.notificacionesPendientes) &&
+    resumen.notificacionesPendientes >= 0
+      ? Math.floor(resumen.notificacionesPendientes)
       : CONTEO_MOCK_NOTIFICACIONES;
   const avatar = perfil.avatarUrl.startsWith("http")
     ? perfil.avatarUrl
@@ -52,7 +72,11 @@ export async function Header() {
             <Icon name="chevronDown" className="size-3.5" />
           </div>
 
-          <NotificationsBell conteo={conteoNotificaciones} />
+          <NotificationsBell
+            key={`${conteoNotificaciones}-${listado.items.length}`}
+            conteo={conteoNotificaciones}
+            items={listado.items}
+          />
 
           <div className="flex items-center gap-2 rounded-xl bg-panel py-1 pl-1 pr-3">
             <Image
